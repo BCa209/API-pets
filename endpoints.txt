@@ -1,0 +1,115 @@
+venv\Scripts\activate
+uvicorn main:app --host <IP> --port 8000 --reload
+deactivate
+
+
+http://192.168.56.1:8000/mascotas?ubicacion=puno&tipo=ciudad&cantidad=5
+http://192.168.56.1:8000/mascotas
+
+GET - obtener todos existentes
+/mascotas/todos
+
+GET - obtener todo por lugar
+/mascotas?ubicacion={ubicacion}
+/mascotas?ubicacion=puno
+
+GET - obtener mascotas segun la ubicacion que envia tu telefono
+/mascotas/ordenanas?id_telefono{id_telefono}&orden={asc/desc}
+/mascotas/ordenadas?id_telefono=5a5e458e-91f1-46b1-8fed-6eef58295b45&orden=asc
+
+POST recibe la ubicacion del telfono
+/ubicacion
+{
+  "id_telefono": " "
+  "lat": -15.84,
+  "lon": -70.02
+}
+
+POST - regenerar
+/mascotas/regenerar?ubicacion={ubicacion}&tipo={tipo}&cantidad={cantidad}
+/mascotas/regenerar?ubicacion=puno&cantidad=10
+
+POST - spawn
+/mascotas/spawn?ubicacion={ubicacion}&tipo={tipo}&cantidad={cantidad}
+/mascotas/spawn?ubicacion=puno&cantidad=10
+
+PUT /mascotas/{id}
+PUT /mascotas/3
+{
+  "nombre": "Nuevo Nombre",
+  "rareza": "raro",
+  "imagen_url": "https://ejemplo.com/img.png",
+  "lat": -15.84,
+  "lon": -70.03
+}
+
+DELETE /mascotas?ubicacion={ubicacion}
+DELETE /mascotas?ubicacion=puno
+
+DELETE /mascotas/ubicacion?lat={latitud}&lon={longitud}
+{
+  "lat": -15.84,
+  "lon": -70.03
+}
+
+
+api_mascotas/
+├── main.py                          ← Punto de entrada (inicia FastAPI)
+├── routers/                         ← Define rutas HTTP (API pública)
+│   ├── mascotas.py                  ← /mascotas: genera mascotas desde Firebase
+│   └── ubicacion.py                 ← /ubicacion: recibe lat/lon del usuario
+├── services/                        ← Lógica del backend
+│   ├── mascota_service.py           ← Genera mascotas desde moldes
+│   ├── moldes_service.py            ← 🔥 Obtiene moldes desde Firebase
+│   ├── firebase.py                  ← 🔥 Conexión a Firebase
+│   ├── generador_coordenadas.py     ← Genera coordenadas aleatorias
+│   └── ubicacion_service.py         ← Guarda o usa la ubicación del usuario
+├── models/
+│   └── mascota.py                   ← Pydantic BaseModel para validar datos
+├── scripts/
+│   └── subir_molde_a_firestore.py   ← Carga plantillas desde JSON a Firestore
+├── data/                            ← Datos locales (usado como fallback o referencia)
+│   ├── ciudades.py                  ← Centros y radios de ciudades
+│   └── puntos.py                    ← Subzonas (ej: universidad, plaza, etc.)
+├── database/
+│   └── firebase/
+│       ├── firebase_config.json     ← Credenciales privadas 🔒
+│       └── plantillas_mascotas.json    ← Moldes a subir a Firestore
+│   └── sqlite
+│       └── mascotas.db                 ← Moldes a subir a Firestore
+└── static/
+    └── mascotas/                    ← Imágenes asociadas a las mascotas
+
+
+
+
+api_pets1/
+├── main.py                          
+├── routers/                         
+│   ├── mascotas.py                  
+│   └── ubicacion.py              
+├── services/                        
+│   ├── mascota_service.py        
+│   ├── db_service.py        
+│   ├── mascota_spawn.py        
+│   ├── moldes_service.py            
+│   ├── firebase.py                  
+│   ├── generador_coordenadas.py     
+│   └── ubicacion_service.py         
+├── models/            
+│   ├── mascota_sqlite.py  
+│   └── mascota.py                 
+├── scripts/
+│   └── subir_molde_a_firestore.py   
+├── data/                        
+│   ├── ciudades.py        
+│   └── puntos.py             
+├── database/
+│   └── firebase/
+│   │   ├── firebase_config.json     
+│   │   └── plantillas_mascotas.json    
+│   └── sqlite
+│   │   └── mascotas.db              
+└── static/
+│   └── mascotas/                    
+│   │   └── #imagenes asociadas a las mascotas       

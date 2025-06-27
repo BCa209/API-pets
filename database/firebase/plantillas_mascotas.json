@@ -1,0 +1,45 @@
+[
+  {
+    "id": 1,
+    "nombre": "Hachi",
+    "rareza": "común",
+    "imagen_url": "/static/mascotas/hachi.png"
+  },
+  {
+    "id": 2,
+    "nombre": "Gato Facha",
+    "rareza": "raro",
+    "imagen_url": "/static/mascotas/gato_facha.png"
+  },
+  {
+    "id": 3,
+    "nombre": "Gato Mewing",
+    "rareza": "ultra raro",
+    "imagen_url": "/static/mascotas/gato_mewing.png"
+  },
+  {
+    "id": 4,
+    "nombre": "Gato Chamba",
+    "rareza": "común",
+    "imagen_url": "/static/mascotas/gato_chamba.png"
+  },
+  {
+    "id": 5,
+    "nombre": "Caracolito",
+    "rareza": "legendario",
+    "imagen_url": "/static/mascotas/caracolito.png"
+  },
+  {
+    "id": 6,
+    "nombre": "Palomo",
+    "rareza": "legendario",
+    "imagen_url": "/static/mascotas/paloma_tactica.png"
+  },
+  {
+    "id": 7,
+    "nombre": "Palomo aña",
+    "rareza": "comun",
+    "imagen_url": "/static/mascotas/paloma_tactica.png"
+  }
+]
+
