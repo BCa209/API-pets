@@ -1,16 +1,21 @@
-from fastapi import APIRouter, Query, Body, HTTPException
-from models.mascota import Mascota, MascotaActualizar, MascotaPersonalizadaInput
+### routers/mascotas.py
+import os, shutil
+from fastapi import APIRouter, Query, Body, HTTPException, Depends, File, Form, UploadFile
+from sqlalchemy.orm import Session
+from models.mascota import Mascota, MascotaActualizar, MascotaExistenteInput, MascotaPersonalizada, MascotaOut
 from services.db_service import (
     actualizar_mascota_en_db, 
     obtener_todas_las_mascotas,
-    eliminar_mascota_por_coordenadas
+    eliminar_mascota_por_coordenadas,
+    get_db_session
 )
 from services.mascota_service import (
     reiniciar_mascotas_en_ubicacion,
     eliminar_mascotas_por_ubicacion,
     obtener_mascotas_por_ubicacion,
     crear_mascotas_en_ubicacion,
-    agregar_mascota_existente
+    agregar_mascota_existente,
+    agregar_mascota_personalizada
 )
 
 router = APIRouter()
@@ -70,7 +75,7 @@ def actualizar_mascota(id: int, datos_actualizados: MascotaActualizar = Body(...
 
 # Agregar una nueva mascota a partir de un molde
 @router.post("/mascotas/existente", response_model=Mascota)
-def agregar_mascota_personalizada_endpoint(data: MascotaPersonalizadaInput = Body(...)):
+def agregar_mascota_existente_endpoint(data: MascotaExistenteInput = Body(...)):
     mascota = agregar_mascota_existente(
         nombre=data.nombre,
         ubicacion=data.ubicacion,
@@ -91,3 +96,36 @@ def eliminar_mascota_por_ubicacion(
     if eliminadas == 0:
         raise HTTPException(status_code=404, detail="Mascota no encontrada con esas coordenadas")
     return {"mensaje": f"Mascota eliminada correctamente (lat: {lat}, lon: {lon})"}
+
+@router.post("/mascotas/personalizado", response_model=MascotaOut)
+def crear_mascota_personalizada(
+    nombre: str = Form(...),
+    rareza: str = Form(...),
+    lat: float = Form(...),
+    lon: float = Form(...),
+    imagen: UploadFile = File(...),
+    db: Session = Depends(get_db_session)  # <-- CAMBIADO AQUÍ
+):
+    # Formatear el nombre para usarlo como nombre de archivo
+    nombre_archivo = nombre.lower().replace(" ", "_") + ".png"
+    ruta_imagen = f"static/mascotas/{nombre_archivo}"
+
+    # Verificar extensión válida
+    ext = os.path.splitext(imagen.filename)[-1].lower()
+    if ext not in [".png", ".jpg", ".jpeg"]:
+        raise HTTPException(status_code=400, detail="Formato de imagen no permitido")
+
+    # Guardar archivo en disco
+    with open(ruta_imagen, "wb") as buffer:
+        shutil.copyfileobj(imagen.file, buffer)
+
+    # Guardar en la base de datos
+    mascota_data = {
+        "nombre": nombre,
+        "rareza": rareza,
+        "imagen_url": f"/static/mascotas/{nombre_archivo}",
+        "lat": lat,
+        "lon": lon
+    }
+
+    return agregar_mascota_personalizada(mascota_data, db)

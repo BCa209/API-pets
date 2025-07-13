@@ -1,5 +1,6 @@
 import random
-from models.mascota import Mascota
+from sqlalchemy.orm import Session
+from models.mascota import Mascota, MascotaOut
 from models.mascota_sqlite import MascotaDB
 from services.generador_coordenadas import generar_coordenada_dentro_de_radio
 from data.ciudades import CIUDADES
@@ -106,3 +107,26 @@ def agregar_mascota_existente(nombre: str, ubicacion: str, lat: float | None = N
     guardar_mascotas_en_db([mascota_db])
 
     return mascota
+
+def agregar_mascota_personalizada(mascota_data: dict, db: Session) -> MascotaOut:
+    mascota_db = MascotaDB(
+        nombre=mascota_data["nombre"],
+        rareza=mascota_data["rareza"],
+        imagen_url=mascota_data["imagen_url"],
+        lat=mascota_data["lat"],
+        lon=mascota_data["lon"],
+        ubicacion=mascota_data.get("ubicacion", "personalizado")  # default
+    )
+
+    db.add(mascota_db)
+    db.commit()
+    db.refresh(mascota_db)
+
+    return MascotaOut(
+        id=mascota_db.id,
+        nombre=mascota_db.nombre,
+        rareza=mascota_db.rareza,
+        imagen_url=mascota_db.imagen_url,
+        lat=mascota_db.lat,
+        lon=mascota_db.lon
+    )

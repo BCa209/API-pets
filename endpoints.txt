@@ -33,6 +33,16 @@ POST - spawn
 /mascotas/spawn?ubicacion={ubicacion}&tipo={tipo}&cantidad={cantidad}
 /mascotas/spawn?ubicacion=puno&cantidad=10
 
+POST - nuevo personalizada
+/mascotas/personalizado
+{
+  "nombre":"Nombre mascota",
+  "rareza":"magico",
+  "lat":-15.840024949071895,
+  "lon":-70.02201564791459
+  "imagen": .png,
+}
+
 PUT /mascotas/{id}
 PUT /mascotas/3
 {
@@ -83,7 +93,7 @@ api_mascotas/
 
 
 
-api_pets1/
+api_pets/
 ├── main.py                          
 ├── routers/                         
 │   ├── mascotas.py                  
@@ -109,7 +119,109 @@ api_pets1/
 │   │   ├── firebase_config.json     
 │   │   └── plantillas_mascotas.json    
 │   └── sqlite
-│   │   └── mascotas.db              
+│   │   └── mascotas.sqlite            
 └── static/
 │   └── mascotas/                    
 │   │   └── #imagenes asociadas a las mascotas       
+
+
+INFO:     132.157.130.141:0 - "GET /mascotas/ordenadas?id_telefono=ce14e49f-8ca3-410c-953f-8b7d801e0e4f&orden=asc HTTP/1.1" 200 OK
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/starlette/routing.py", line 714, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/starlette/routing.py", line 734, in app
+    await route.handle(scope, receive, send)
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/fastapi/routing.py", line 301, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/fastapi/routing.py", line 214, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/starlette/concurrency.py", line 37, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 2470, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 967, in run
+    result = context.run(func, *args)
+  File "/opt/render/project/src/routers/mascotas.py", line 43, in spawn_mascotas
+    return crear_mascotas_en_ubicacion(ubicacion, tipo, cantidad)
+  File "/opt/render/project/src/services/mascota_service.py", line 63, in crear_mascotas_en_ubicacion
+    return generar_mascotas(ubicacion, tipo, cantidad)
+  File "/opt/render/project/src/services/mascota_service.py", line 22, in generar_mascotas
+    moldes = obtener_moldes_mascotas()
+  File "/opt/render/project/src/services/moldes_service.py", line 7, in obtener_moldes_mascotas
+    for doc in docs:
+               ^^^^
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/google/cloud/firestore_v1/stream_generator.py", line 58, in __next__
+    return self._generator.__next__()
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/google/cloud/firestore_v1/query.py", line 410, in _make_stream
+    response_iterator, expected_prefix = self._get_stream_iterator(
+                                         ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        transaction,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        explain_options,
+        ^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/google/cloud/firestore_v1/query.py", line 260, in _get_stream_iterator
+    response_iterator = self._client._firestore_api.run_query(
+        request=request,
+        metadata=self._client._rpc_metadata,
+        **kwargs,
+    )
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/google/cloud/firestore_v1/services/firestore/client.py", line 1624, in run_query
+    response = rpc(
+        request,
+    ...<2 lines>...
+        metadata=metadata,
+    )
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/google/api_core/gapic_v1/method.py", line 131, in __call__
+    return wrapped_func(*args, **kwargs)
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/google/api_core/retry/retry_unary.py", line 294, in retry_wrapped_func
+    return retry_target(
+        target,
+    ...<3 lines>...
+        on_error=on_error,
+    )
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/google/api_core/retry/retry_unary.py", line 156, in retry_target
+    next_sleep = _retry_error_helper(
+        exc,
+    ...<6 lines>...
+        timeout,
+    )
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/google/api_core/retry/retry_base.py", line 229, in _retry_error_helper
+    raise final_exc from source_exc
